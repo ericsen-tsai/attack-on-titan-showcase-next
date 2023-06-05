@@ -1,11 +1,13 @@
 'use client'
 import { Fragment, useState } from 'react'
 import type { GetTitansResponse } from '../types'
+import Image from 'next/image'
 
 function TitansShowCase({ titans }: { titans: GetTitansResponse['results'] }) {
   const [titan, setTitan] = useState<GetTitansResponse['results'][number]>(
     titans[0]
   )
+  const [isImgLoading, setIsImgLoading] = useState<boolean>(false)
 
   return (
     <div className="flex font-mono text-xl justify-center gap-10">
@@ -16,12 +18,27 @@ function TitansShowCase({ titans }: { titans: GetTitansResponse['results'] }) {
             className={`hover:text-pink-500 transition-all ${
               t.name === titan.name ? 'text-pink-500' : ''
             }`}
-            onClick={() => setTitan(titans[ind])}
+            onClick={() => {
+              setTitan(titans[ind])
+              if (titan.name !== titans[ind].name) {
+                setIsImgLoading(true)
+              }
+            }}
           >
             {t.name}
           </button>
         ))}
       </div>
+      <Image
+        src={titan.img}
+        alt={titan.name}
+        className={`rounded-lg w-[25rem] h-[25rem] ${
+          isImgLoading ? 'blur-sm' : ''
+        }`}
+        height={400}
+        width={400}
+        onLoad={() => setIsImgLoading(false)}
+      />
       <div className="flex flex-col gap-3 w-[25rem]">
         <p className="font-bold uppercase">
           abilities:
